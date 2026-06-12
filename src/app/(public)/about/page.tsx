@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import { prisma } from '@/lib/prisma';
 import FadeInUp from '@/components/FadeInUp';
-import { WhatsAppOutlined, InstagramOutlined, LinkedinOutlined, MailOutlined } from '@ant-design/icons';
+import { WhatsAppIcon, InstagramIcon, LinkedinIcon, MailIcon } from '@/components/AntdIcons';
 
 const plusJakartaSans = Plus_Jakarta_Sans({ 
   subsets: ['latin'], 
@@ -242,10 +242,10 @@ export default async function AboutPage() {
                                 let IconElement = null;
 
                                 if (!link.isCustom) {
-                                  if (platformName === 'whatsapp') IconElement = <WhatsAppOutlined className="text-xl" />;
-                                  if (platformName === 'instagram') IconElement = <InstagramOutlined className="text-xl" />;
-                                  if (platformName === 'linkedin') IconElement = <LinkedinOutlined className="text-xl" />;
-                                  if (platformName === 'email') IconElement = <MailOutlined className="text-xl" />;
+                                  if (platformName === 'whatsapp') IconElement = <WhatsAppIcon className="text-xl" />;
+                                  if (platformName === 'instagram') IconElement = <InstagramIcon className="text-xl" />;
+                                  if (platformName === 'linkedin') IconElement = <LinkedinIcon className="text-xl" />;
+                                  if (platformName === 'email') IconElement = <MailIcon className="text-xl" />;
                                 }
 
                                 if (link.isCustom && link.customIconUrl) {

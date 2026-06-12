@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 import { prisma } from '@/lib/prisma';
 import {
-  WhatsAppOutlined,
-  InstagramOutlined,
-  LinkedinOutlined,
-  MailOutlined
-} from '@ant-design/icons';
+  WhatsAppIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  MailIcon
+} from '@/components/AntdIcons';
 
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['600', '700'], display: 'swap' });
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500'], display: 'swap' });
@@ -30,16 +30,16 @@ function renderPlatformIcon(platformName: string, isCustom: boolean, customIconU
   const name = platformName.toLowerCase().trim();
   if (!isCustom) {
     if (name === 'whatsapp') {
-      return <WhatsAppOutlined style={{ color: '#25D366' }} className="text-lg" />;
+      return <WhatsAppIcon style={{ color: '#25D366' }} className="text-lg" />;
     }
     if (name === 'instagram') {
-      return <InstagramOutlined style={{ color: '#E1306C' }} className="text-lg" />;
+      return <InstagramIcon style={{ color: '#E1306C' }} className="text-lg" />;
     }
     if (name === 'linkedin') {
-      return <LinkedinOutlined style={{ color: '#0077B5' }} className="text-lg" />;
+      return <LinkedinIcon style={{ color: '#0077B5' }} className="text-lg" />;
     }
     if (name === 'email') {
-      return <MailOutlined style={{ color: '#EA4335' }} className="text-lg" />;
+      return <MailIcon style={{ color: '#EA4335' }} className="text-lg" />;
     }
   }
 
