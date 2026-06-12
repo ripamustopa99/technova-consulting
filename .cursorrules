@@ -1,0 +1,6 @@
+# ATURAN KETAT PENGEMBANGAN TECHNOVA
+
+1. KODE HARUS LENGKAP: Dilarang keras memotong kode dengan komentar seperti `// TODO` atau `// tulis logika di sini`. Tulis seluruh baris kode sampai selesai.
+2. EFISIENSI DATABASE: Setiap query database menggunakan Prisma WAJIB menggunakan properti `select` untuk mengambil kolom yang hanya dibutuhkan oleh UI. Dilarang mengambil data yang tidak terpakai.
+3. SEO BAGUS: Gunakan React Server Components untuk halaman publik. Semua dynamic route (`[slug]`) WAJIB mengimplementasikan fungsi `generateMetadata()`. Semua gambar wajib menggunakan `next/image`.
+4. UI KONSISTEN: Gunakan Ant Design v5 untuk admin dashboard dan Tailwind CSS untuk halaman publik sesuai panduan di `design.md`.
