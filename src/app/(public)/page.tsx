@@ -263,11 +263,11 @@ export default async function HomePage() {
                       
                       <div className="relative z-10">
                         {/* Icon */}
-                        <div className="w-14 h-14 mb-5 rounded-xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center text-2xl">
+                        <div className="w-14 h-14 mb-5 rounded-xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center overflow-hidden">
                           {service.image && service.image.startsWith('http') ? (
-                            <img src={service.image} alt={service.title} width={28} height={28} className="object-contain" />
+                            <img src={service.image} alt={service.title} className="w-7 h-7 object-contain" />
                           ) : (
-                            <span>{getServiceIcon(service.title)}</span>
+                            <span className="text-2xl">{getServiceIcon(service.title)}</span>
                           )}
                         </div>
 

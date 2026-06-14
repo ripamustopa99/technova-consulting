@@ -51,16 +51,21 @@ const breadcrumbNameMap: Record<string, string> = {
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [profileName, setProfileName] = useState('Admin');
+  const [profileEmail, setProfileEmail] = useState('admin@technova.com');
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
+
     // Fetch notifications
     const fetchNotifications = async () => {
       try {
@@ -75,6 +80,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     };
     fetchNotifications();
+
+    // Fetch profile settings
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/admin/profile');
+        const data = await res.json();
+        if (data.success) {
+          setProfileName(data.data.company_name || 'Admin');
+          setProfileEmail(data.data.contact_email || 'admin@technova.com');
+        }
+      } catch (err) {
+        console.error('Failed to load profile', err);
+      }
+    };
+    fetchProfile();
 
     const check = () => setIsMobile(window.innerWidth < 992);
     check();
@@ -183,6 +203,47 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 
+  // Show skeleton during hydration to prevent FOUC
+  if (!mounted) {
+    return (
+      <div className={plusJakartaSans.className} style={{ minHeight: '100vh', display: 'flex', background: '#F8FAFC' }}>
+        {/* Sidebar skeleton */}
+        <div style={{ width: 260, background: '#0F172A', minHeight: '100vh', flexShrink: 0 }} className="hidden lg:block">
+          <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid rgba(100,116,139,0.3)' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg, #22D3EE, #6366F1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#fff', fontWeight: 800, fontSize: 13 }}>TN</span>
+            </div>
+            <span style={{ color: '#fff', fontWeight: 700, fontSize: 18, marginLeft: 8 }}>TechNova</span>
+          </div>
+          <div style={{ padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{ height: 40, borderRadius: 8, background: 'rgba(148,163,184,0.1)' }} />
+            ))}
+          </div>
+        </div>
+        {/* Main skeleton */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ height: 64, background: '#fff', borderBottom: '1px solid #F1F5F9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
+            <div style={{ width: 200, height: 20, borderRadius: 6, background: '#E2E8F0' }} />
+            <div style={{ display: 'flex', gap: 12 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E2E8F0' }} />
+              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E2E8F0' }} />
+            </div>
+          </div>
+          <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ height: 28, width: '30%', borderRadius: 8, background: '#E2E8F0' }} />
+            <div style={{ height: 200, borderRadius: 12, background: '#E2E8F0' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+              <div style={{ height: 120, borderRadius: 12, background: '#E2E8F0' }} />
+              <div style={{ height: 120, borderRadius: 12, background: '#E2E8F0' }} />
+              <div style={{ height: 120, borderRadius: 12, background: '#E2E8F0' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Layout className={plusJakartaSans.className} style={{ minHeight: '100vh' }}>
       {/* DESKTOP SIDEBAR */}
@@ -231,8 +292,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Avatar size={34} icon={<UserOutlined />} style={{ background: 'linear-gradient(135deg, #22D3EE, #6366F1)' }} />
                 {!isMobile && (
                   <div style={{ lineHeight: 1.3 }}>
-                    <Text style={{ fontSize: 13, fontWeight: 600, color: '#1E293B', display: 'block' }}>Admin</Text>
-                    <Text style={{ fontSize: 11, color: '#94A3B8', display: 'block' }}>admin@technova.com</Text>
+                    <Text style={{ fontSize: 13, fontWeight: 600, color: '#1E293B', display: 'block' }}>{profileName}</Text>
+                    <Text style={{ fontSize: 11, color: '#94A3B8', display: 'block' }}>{profileEmail}</Text>
                   </div>
                 )}
               </div>

@@ -82,8 +82,12 @@ export default async function ServicesPage() {
 
                     <div className="relative z-10 flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
                       {/* Icon */}
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center text-3xl flex-shrink-0">
-                        {getIcon(service.title)}
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border border-cyan-500/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {service.image && service.image.startsWith('http') ? (
+                          <img src={service.image} alt={service.title} className="w-8 h-8 object-contain" />
+                        ) : (
+                          <span className="text-3xl">{getIcon(service.title)}</span>
+                        )}
                       </div>
 
                       {/* Content */}

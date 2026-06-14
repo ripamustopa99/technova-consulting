@@ -195,6 +195,13 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
           <Form.List name="social_links">
             {(fields, { add, remove }) => (
               <div className="flex flex-col gap-4">
+                {fields.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <ShareAltOutlined className="text-3xl text-slate-300 mb-3" />
+                    <p className="text-slate-400 text-sm font-medium">Belum ada social media</p>
+                    <p className="text-slate-300 text-xs mt-1">Klik tombol di bawah untuk menambahkan</p>
+                  </div>
+                )}
                 {fields.map(({ key, name, ...restField }) => (
                   <div
                     key={key}

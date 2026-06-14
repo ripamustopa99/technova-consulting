@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Statistic, Table, Typography, Tag, Badge } from 'antd';
 import {
   ProjectOutlined,
@@ -85,6 +85,11 @@ export default function DashboardOverview({
   categoryData,
   messageTrendData,
 }: DashboardOverviewProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Stat card configs
   const statCards = [
@@ -161,31 +166,37 @@ export default function DashboardOverview({
 
             {categoryData.length > 0 ? (
               <div style={{ width: '100%', height: 260, marginTop: 16 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={categoryData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={55}
-                      outerRadius={90}
-                      paddingAngle={4}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {categoryData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<PieTooltip />} />
-                    <Legend
-                      verticalAlign="bottom"
-                      iconType="circle"
-                      iconSize={8}
-                      formatter={(value: string) => <span style={{ color: '#64748B', fontSize: 12 }}>{value}</span>}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                {mounted ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={55}
+                        outerRadius={90}
+                        paddingAngle={4}
+                        dataKey="value"
+                        stroke="none"
+                      >
+                        {categoryData.map((_, index) => (
+                          <Cell key={`cell-${index}`} fill={DONUT_COLORS[index % DONUT_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<PieTooltip />} />
+                      <Legend
+                        verticalAlign="bottom"
+                        iconType="circle"
+                        iconSize={8}
+                        formatter={(value: string) => <span style={{ color: '#64748B', fontSize: 12 }}>{value}</span>}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 160, height: 160, borderRadius: '50%', background: '#F1F5F9' }} />
+                  </div>
+                )}
               </div>
             ) : (
               <div style={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -207,39 +218,49 @@ export default function DashboardOverview({
             <Text style={{ color: '#94A3B8', fontSize: 13 }}>Jumlah pesan kontak 6 bulan terakhir</Text>
 
             <div style={{ width: '100%', height: 260, marginTop: 16 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={messageTrendData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                  <defs>
-                    <linearGradient id="colorMessages" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.02} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
-                  <XAxis
-                    dataKey="month"
-                    tick={{ fontSize: 12, fill: '#94A3B8' }}
-                    axisLine={{ stroke: '#E2E8F0' }}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12, fill: '#94A3B8' }}
-                    axisLine={false}
-                    tickLine={false}
-                    allowDecimals={false}
-                  />
-                  <Tooltip content={<AreaTooltip />} />
-                  <Area
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#4F46E5"
-                    strokeWidth={2.5}
-                    fill="url(#colorMessages)"
-                    dot={{ r: 4, fill: '#4F46E5', strokeWidth: 2, stroke: '#fff' }}
-                    activeDot={{ r: 6, fill: '#4F46E5', strokeWidth: 2, stroke: '#fff' }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+              {mounted ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={messageTrendData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                    <defs>
+                      <linearGradient id="colorMessages" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+                    <XAxis
+                      dataKey="month"
+                      tick={{ fontSize: 12, fill: '#94A3B8' }}
+                      axisLine={{ stroke: '#E2E8F0' }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: '#94A3B8' }}
+                      axisLine={false}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip content={<AreaTooltip />} />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#4F46E5"
+                      strokeWidth={2.5}
+                      fill="url(#colorMessages)"
+                      dot={{ r: 4, fill: '#4F46E5', strokeWidth: 2, stroke: '#fff' }}
+                      activeDot={{ r: 6, fill: '#4F46E5', strokeWidth: 2, stroke: '#fff' }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: 8, paddingBottom: 30 }}>
+                  <div style={{ height: 16, borderRadius: 4, background: '#F1F5F9', width: '90%' }} />
+                  <div style={{ height: 16, borderRadius: 4, background: '#F1F5F9', width: '70%' }} />
+                  <div style={{ height: 16, borderRadius: 4, background: '#F1F5F9', width: '80%' }} />
+                  <div style={{ height: 16, borderRadius: 4, background: '#F1F5F9', width: '60%' }} />
+                  <div style={{ height: 16, borderRadius: 4, background: '#F1F5F9', width: '75%' }} />
+                </div>
+              )}
             </div>
           </Card>
         </Col>

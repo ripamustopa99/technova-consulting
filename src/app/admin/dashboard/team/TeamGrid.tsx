@@ -314,6 +314,13 @@ export default function TeamGrid({ data }: TeamGridProps) {
             <Form.List name="social_links">
               {(fields, { add, remove }) => (
                 <div className="flex flex-col gap-4">
+                  {fields.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-8 text-center">
+                      <LinkOutlined className="text-3xl text-slate-300 mb-3" />
+                      <p className="text-slate-400 text-sm font-medium">Belum ada link social media</p>
+                      <p className="text-slate-300 text-xs mt-1">Klik tombol di bawah untuk menambahkan</p>
+                    </div>
+                  )}
                   {fields.map(({ key, name, ...restField }) => (
                     <div
                       key={key}
@@ -325,11 +332,11 @@ export default function TeamGrid({ data }: TeamGridProps) {
                           <Form.Item
                             {...restField}
                             name={[name, 'platform']}
-                            rules={[{ required: true, message: 'Platform wajib dipilih' }]}
+                            rules={[{ required: true, message: 'Wajib dipilih' }]}
                             noStyle
                           >
                             <Select
-                              placeholder="Pilih Platform"
+                              placeholder="Platform"
                               size="large"
                               className="w-full"
                               options={[
@@ -369,7 +376,7 @@ export default function TeamGrid({ data }: TeamGridProps) {
                         <Form.Item
                           {...restField}
                           name={[name, 'url']}
-                          rules={[{ required: true, message: 'URL tidak boleh kosong' }]}
+                          rules={[{ required: true, message: 'URL wajib diisi' }]}
                           noStyle
                         >
                           <Input placeholder="https://..." size="large" className="rounded-lg" />
@@ -381,7 +388,7 @@ export default function TeamGrid({ data }: TeamGridProps) {
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => remove(name)}
-                        className="absolute -top-3 -right-3 bg-red-50 border border-red-100 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm z-10 hover:bg-red-500 hover:text-white"
+                        className="absolute -top-3 -right-3 bg-red-50 border border-red-100 shadow-sm z-10 hover:bg-red-500 hover:text-white text-red-400 transition-colors"
                         shape="circle"
                       />
                     </div>
@@ -393,7 +400,7 @@ export default function TeamGrid({ data }: TeamGridProps) {
                     block
                     icon={<PlusOutlined />}
                     size="large"
-                    className="border-slate-300 text-slate-500 hover:text-cyan-600 hover:border-cyan-500 rounded-xl"
+                    className={`border-slate-300 text-slate-500 hover:text-cyan-600 hover:border-cyan-500 rounded-xl ${fields.length === 0 ? 'mt-0' : ''}`}
                   >
                     Tambah Link / Social Media
                   </Button>
