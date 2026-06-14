@@ -14,8 +14,6 @@ const socialLinkSchema = z.object({
 const settingsSchema = z.object({
   company_name: z.string().optional().nullable(),
   tagline: z.string().optional().nullable(),
-  logo_url: z.string().optional().nullable(),
-  favicon_url: z.string().optional().nullable(),
   contact_email: z.string().optional().nullable(),
   contact_phone: z.string().optional().nullable(),
   contact_address: z.string().optional().nullable(),

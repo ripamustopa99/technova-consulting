@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import PublicNavbar from '@/components/PublicNavbar';
 import PublicFooter from '@/components/PublicFooter';
+import { prisma } from '@/lib/prisma';
 
 export const metadata: Metadata = {
   title: {
@@ -41,14 +42,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Fetch general settings
+  let companyName = 'TechNova Consulting';
+  try {
+    const rows = await prisma.setting.findMany({ select: { key: true, value: true } });
+    const settings: Record<string, string> = {};
+    rows.forEach((r) => { settings[r.key] = r.value; });
+    if (settings['company_name']) companyName = settings['company_name'];
+  } catch (error) {
+    console.error('Failed to fetch settings:', error);
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-950">
-      <PublicNavbar />
+      <PublicNavbar companyName={companyName} />
       <main className="flex-1">{children}</main>
       <PublicFooter />
     </div>

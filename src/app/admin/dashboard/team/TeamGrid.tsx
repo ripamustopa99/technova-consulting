@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, Button, Popconfirm, Typography, Modal, Form, Input, Avatar, message, Space, Select } from 'antd';
+import { Card, Button, Popconfirm, Typography, Modal, Form, Input, Avatar, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, UserOutlined, InboxOutlined, LinkOutlined, PictureOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { createTeamMember, updateTeamMember, deleteTeamMember, getTeamMember } from './actions';
@@ -321,13 +321,13 @@ export default function TeamGrid({ data }: TeamGridProps) {
                     >
                       <div className="w-full sm:w-1/3">
                         <span className="block text-xs font-semibold text-slate-600 mb-1">Platform</span>
-                        <Form.Item
-                          {...restField}
-                          name={[name, 'platform']}
-                          rules={[{ required: true, message: 'Platform wajib dipilih' }]}
-                          noStyle
-                        >
-                          <Space.Compact style={{ width: '100%' }}>
+                        <div className="flex gap-2">
+                          <Form.Item
+                            {...restField}
+                            name={[name, 'platform']}
+                            rules={[{ required: true, message: 'Platform wajib dipilih' }]}
+                            noStyle
+                          >
                             <Select
                               placeholder="Pilih Platform"
                               size="large"
@@ -343,23 +343,23 @@ export default function TeamGrid({ data }: TeamGridProps) {
                                 const custom = customPlatforms.find(p => p.value === val);
                                 if (custom) {
                                   form.setFieldValue(['social_links', name, 'isCustom'], true);
-                                  form.setFieldValue(['social_links', name, 'customIconUrl'], custom.customIconUrl);
+                                  form.setFieldValue(['social_links', name, 'customIconUrl'], custom.customIconUrl || '');
                                 } else {
                                   form.setFieldValue(['social_links', name, 'isCustom'], false);
-                                  form.setFieldValue(['social_links', name, 'customIconUrl'], undefined);
+                                  form.setFieldValue(['social_links', name, 'customIconUrl'], '');
                                 }
                               }}
                             />
-                            <Button
-                              type="primary"
-                              size="large"
-                              icon={<PlusOutlined />}
-                              onClick={() => setIsCustomModalOpen(true)}
-                              className="bg-slate-800 hover:bg-slate-700"
-                              title="Tambah Platform Kustom"
-                            />
-                          </Space.Compact>
-                        </Form.Item>
+                          </Form.Item>
+                          <Button
+                            type="primary"
+                            size="large"
+                            icon={<PlusOutlined />}
+                            onClick={() => setIsCustomModalOpen(true)}
+                            className="bg-slate-800 hover:bg-slate-700 flex-shrink-0"
+                            title="Tambah Platform Kustom"
+                          />
+                        </div>
                         <Form.Item {...restField} name={[name, 'isCustom']} hidden><Input /></Form.Item>
                         <Form.Item {...restField} name={[name, 'customIconUrl']} hidden><Input /></Form.Item>
                       </div>

@@ -34,11 +34,11 @@ export default function TermsOfServicePage() {
           <li>use the materials for any commercial purpose or for any public display;</li>
           <li>attempt to reverse engineer any software contained on TechNova Consulting&apos;s Website;</li>
           <li>remove any copyright or other proprietary notations from the materials; or</li>
-          <li>transfer the materials to another person or "mirror" the materials on any other server.</li>
+          <li>transfer the materials to another person or &ldquo;mirror&rdquo; the materials on any other server.</li>
         </ul>
         
         <h2>3. Disclaimer</h2>
-        <p>All the materials on TechNova Consulting&apos;s Website are provided "as is". TechNova Consulting makes no warranties, may it be expressed or implied, therefore negates all other warranties. Furthermore, TechNova Consulting does not make any representations concerning the accuracy or reliability of the use of the materials on its Website or otherwise relating to such materials or any sites linked to this Website.</p>
+        <p>All the materials on TechNova Consulting&apos;s Website are provided &ldquo;as is&rdquo;. TechNova Consulting makes no warranties, may it be expressed or implied, therefore negates all other warranties. Furthermore, TechNova Consulting does not make any representations concerning the accuracy or reliability of the use of the materials on its Website or otherwise relating to such materials or any sites linked to this Website.</p>
         
         <h2>4. Limitations</h2>
         <p>TechNova Consulting or its suppliers will not be hold accountable for any damages that will arise with the use or inability to use the materials on TechNova Consulting&apos;s Website, even if TechNova Consulting or an authorize representative of this Website has been notified, orally or written, of the possibility of such damage. Some jurisdiction does not allow limitations on implied warranties or limitations of liability for incidental damages, these limitations may not apply to you.</p>

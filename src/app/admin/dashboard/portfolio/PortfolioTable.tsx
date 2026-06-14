@@ -5,6 +5,7 @@ import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, I
 import { EditOutlined, DeleteOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { createProject, updateProject, deleteProject, getProjectDetail } from './actions';
+import ResponsiveTable from '@/components/ResponsiveTable';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -200,7 +201,7 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
         className="shadow-sm border border-slate-200 rounded-xl" 
         styles={{ body: { padding: '24px' } }}
       >
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <div>
             <Title level={4} className={`${plusJakartaSans.className} m-0 text-slate-800`}>
               Portfolio Showcases
@@ -210,20 +211,22 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
           <Button 
             type="primary" 
             icon={<PlusOutlined />} 
-            className="bg-cyan-500 hover:bg-cyan-400 border-0 h-10 px-5 rounded-lg shadow-md shadow-cyan-500/20 font-semibold tracking-wide"
+            className="bg-cyan-500 hover:bg-cyan-400 border-0 h-10 px-5 rounded-lg shadow-md shadow-cyan-500/20 font-semibold tracking-wide self-start sm:self-auto"
             onClick={() => handleOpenModal()}
           >
             Add New Project
           </Button>
         </div>
 
-        <Table 
-          columns={columns} 
-          dataSource={data} 
-          rowKey="id"
-          pagination={{ pageSize: 10, className: 'mt-6' }}
-          className="border border-slate-100 rounded-xl overflow-hidden [&_.ant-table-thead_th]:bg-slate-50 [&_.ant-table-thead_th]:text-slate-500 [&_.ant-table-thead_th]:font-semibold"
-        />
+        <ResponsiveTable>
+          <Table 
+            columns={columns} 
+            dataSource={data} 
+            rowKey="id"
+            pagination={{ pageSize: 10, className: 'mt-6' }}
+            className="border border-slate-100 rounded-xl overflow-hidden [&_.ant-table-thead_th]:bg-slate-50 [&_.ant-table-thead_th]:text-slate-500 [&_.ant-table-thead_th]:font-semibold"
+          />
+        </ResponsiveTable>
       </Card>
 
       {/* MODAL FORM CREATE/EDIT */}
@@ -233,7 +236,7 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
         onCancel={handleCloseModal}
         footer={null}
         width={800}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form
           form={form}

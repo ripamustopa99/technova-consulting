@@ -20,7 +20,7 @@ export default async function ServicesPage() {
       where: { status: 'PUBLISHED' },
       select: {
         id: true,
-        title: true,
+        title: true, 
         slug: true,
         description: true,
         image: true,

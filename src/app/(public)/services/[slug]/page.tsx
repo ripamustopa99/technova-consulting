@@ -45,7 +45,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       <div className="mb-10">
         {service.image && service.image.startsWith('http') && (
           <div className="w-20 h-20 mb-8 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <img src={service.image} alt={service.title} className="w-10 h-10 object-contain" />
+            <img src={service.image} alt={service.title} className="w-10 h-10 object-cover overflow-hidden" />
           </div>
         )}
         <h1 className={`${plusJakartaSans.className} text-4xl lg:text-5xl font-extrabold text-white mb-6 tracking-tight`}>

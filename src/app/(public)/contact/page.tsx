@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   // Fetch settings data untuk info kontak
-  let contactInfo: Record<string, string> = {};
+  const contactInfo: Record<string, string> = {};
 
   try {
     const settings = await prisma.setting.findMany({
@@ -27,10 +27,10 @@ export default async function ContactPage() {
     console.error('Error fetching settings:', error);
   }
 
-  const email = contactInfo['email'] || 'info@technova.com';
-  const phone = contactInfo['phone'] || '+62 812 3456 7890';
+  const email = contactInfo['contact_email'] || 'info@technova.com';
+  const phone = contactInfo['contact_phone'] || '+62 812 3456 7890';
   const whatsapp = contactInfo['whatsapp'] || phone.replace(/[^0-9]/g, '');
-  const address = contactInfo['address'] || 'Jakarta, Indonesia';
+  const address = contactInfo['contact_address'] || 'Jakarta, Indonesia';
 
   return (
     <div className={`${inter.className} bg-slate-950 text-slate-50`}>

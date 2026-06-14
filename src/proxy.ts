@@ -43,7 +43,7 @@ export async function proxy(request: NextRequest) {
         await jwtVerify(token, JWT_SECRET);
         // Redirect to dashboard if already logged in
         return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-      } catch (error) {
+      } catch {
         // Token is invalid, continue to login page
         const response = NextResponse.next();
         response.cookies.delete('auth_token');

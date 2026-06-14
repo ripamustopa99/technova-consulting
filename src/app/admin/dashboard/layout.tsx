@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Breadcrumb, Avatar, Dropdown, Button, Typography, Drawer, Badge, message } from 'antd';
@@ -201,27 +201,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Sider>
       )}
 
-      {/* MOBILE DRAWER */}
-      <Drawer
-        placement="left"
-        open={isMobile && drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        size="default"
-        closable={false}
-        styles={{ body: { padding: 0, background: '#0F172A' }, header: { display: 'none' } }}
-      >
-        <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
-          <Button type="text" icon={<CloseOutlined />} onClick={() => setDrawerOpen(false)} style={{ color: '#94A3B8', fontSize: 16 }} />
-        </div>
-        {logoFull}
-        {sidebarMenu}
-      </Drawer>
-
       {/* MAIN */}
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh', margin: 0 }}>
         <Header
           style={{
-            background: '#FFFFFF', height: 64, padding: '0 16px',
+            background: '#FFFFFF', height: 64, lineHeight: '64px', padding: '0 16px', margin: 0,
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             borderBottom: '1px solid #F1F5F9', position: 'sticky', top: 0, zIndex: 10,
           }}
@@ -260,6 +244,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {children}
         </Content>
       </Layout>
+
+      {/* MOBILE DRAWER */}
+      <Drawer
+        placement="left"
+        open={isMobile && drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        closable={false}
+        size={240}
+        styles={{ body: { padding: 0, background: '#0F172A' }, header: { display: 'none' }, wrapper: { boxShadow: '4px 0 24px rgba(0,0,0,0.15)' } }}
+      >
+        <div style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
+          <Button type="text" icon={<CloseOutlined />} onClick={() => setDrawerOpen(false)} style={{ color: '#94A3B8', fontSize: 16 }} />
+        </div>
+        {logoFull}
+        {sidebarMenu}
+      </Drawer>
     </Layout>
   );
 }

@@ -233,7 +233,7 @@ export default async function AboutPage() {
                                 } else {
                                   socialLinks = [{ platform: 'linkedin', url: member.linkedin, isCustom: false }];
                                 }
-                              } catch (e) {
+                              } catch {
                                 socialLinks = [{ platform: 'linkedin', url: member.linkedin, isCustom: false }];
                               }
 

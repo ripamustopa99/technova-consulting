@@ -91,13 +91,13 @@ function getBrandHoverClasses(platformName: string): string {
 export default async function PublicFooter() {
   const currentYear = new Date().getFullYear();
 
-  let settings: Record<string, string> = {};
+  const settings: Record<string, string> = {};
   try {
     const rows = await prisma.setting.findMany({
       select: { key: true, value: true },
     });
     rows.forEach((r) => { settings[r.key] = r.value; });
-  } catch (error) {
+  } catch {
     // Fallback jika DB error
   }
 
@@ -105,6 +105,8 @@ export default async function PublicFooter() {
   const phone = settings['contact_phone'] || '+62 812 3456 7890';
   const whatsapp = settings['whatsapp'] || phone.replace(/[^0-9]/g, '');
   const address = settings['contact_address'] || 'Jakarta, Indonesia';
+  const companyName = settings['company_name'] || 'TechNova Consulting';
+  const tagline = settings['tagline'] || 'Empowering enterprises with cutting-edge technology solutions.';
 
   let socialLinks: { platform: string; isCustom: boolean; customIconUrl?: string; url: string }[] = [];
   try {
@@ -133,14 +135,16 @@ export default async function PublicFooter() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-5">
               <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center">
-                <span className="text-white font-extrabold text-sm">TN</span>
+                <span className="text-white font-extrabold text-sm">
+                  {companyName.slice(0, 2).toUpperCase()}
+                </span>
               </div>
               <span className={`${plusJakartaSans.className} text-white font-bold text-xl tracking-tight`}>
-                TechNova
+                {companyName}
               </span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
-              Empowering enterprises with cutting-edge technology solutions. We build robust, scalable systems for the digital age.
+              {tagline}
             </p>
             {/* Social Icons Dinamis */}
             <div className="flex items-center gap-3 flex-wrap animate-fade-in">
@@ -226,7 +230,7 @@ export default async function PublicFooter() {
       <div className="border-t border-slate-800/50">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-500 text-xs">
-            &copy; {currentYear} TechNova Consulting. All rights reserved.
+            &copy; {currentYear} {companyName}. All rights reserved.
           </p>
           <p className="text-slate-600 text-xs">
             Built with Next.js &amp; Tailwind CSS

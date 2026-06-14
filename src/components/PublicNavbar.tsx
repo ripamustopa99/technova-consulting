@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
@@ -25,7 +25,7 @@ const navLinks = [
   { href: '/contact', label: 'Contact' },
 ];
 
-export default function PublicNavbar() {
+export default function PublicNavbar({ companyName = 'TechNova Consulting' }: { companyName?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -40,9 +40,11 @@ export default function PublicNavbar() {
   }, []);
 
   // Close mobile menu on route change
-  useEffect(() => {
+  const prevPathname = useRef(pathname);
+  if (prevPathname.current !== pathname) {
+    prevPathname.current = pathname;
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
   // KEYBOARD SHORTCUT: Ctrl + Shift + A → Admin Login
   useEffect(() => {
@@ -74,10 +76,12 @@ export default function PublicNavbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-indigo-500 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-              <span className="text-white font-extrabold text-xs">TN</span>
+              <span className="text-white font-extrabold text-xs">
+                {companyName.slice(0, 2).toUpperCase()}
+              </span>
             </div>
             <span className={`${plusJakartaSans.className} text-white font-bold text-lg tracking-tight`}>
-              TechNova
+              {companyName}
             </span>
           </Link>
 

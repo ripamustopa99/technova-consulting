@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Tabs, Form, Input, Button, Card, Typography, message, Select, Space, Modal } from 'antd';
+import { Tabs, Form, Input, Button, Card, Typography, message, Select, Modal } from 'antd';
 import { GlobalOutlined, PhoneOutlined, ShareAltOutlined, SaveOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { updateSettings } from './actions';
@@ -145,20 +145,6 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
             >
               <Input placeholder="Empowering Digital Transformation" size="large" className="rounded-lg" />
             </Form.Item>
-
-            <Form.Item
-              name="logo_url"
-              label={<span className="font-semibold text-slate-700">Logo URL</span>}
-            >
-              <Input placeholder="https://example.com/logo.png" size="large" className="rounded-lg" />
-            </Form.Item>
-
-            <Form.Item
-              name="favicon_url"
-              label={<span className="font-semibold text-slate-700">Favicon URL</span>}
-            >
-              <Input placeholder="https://example.com/favicon.ico" size="large" className="rounded-lg" />
-            </Form.Item>
           </div>
         </div>
       ),
@@ -216,13 +202,13 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
                   >
                     <div className="w-full sm:w-1/3">
                       <span className="block text-xs font-semibold text-slate-600 mb-1">Platform</span>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'platform']}
-                        rules={[{ required: true, message: 'Platform wajib dipilih' }]}
-                        noStyle
-                      >
-                        <Space.Compact style={{ width: '100%' }}>
+                      <div className="flex gap-2">
+                        <Form.Item
+                          {...restField}
+                          name={[name, 'platform']}
+                          rules={[{ required: true, message: 'Platform wajib dipilih' }]}
+                          noStyle
+                        >
                           <Select
                             placeholder="Pilih Platform"
                             size="large"
@@ -238,21 +224,22 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
                               const custom = customPlatforms.find(p => p.value === val);
                               if (custom) {
                                 form.setFieldValue(['social_links', name, 'isCustom'], true);
-                                form.setFieldValue(['social_links', name, 'customIconUrl'], custom.customIconUrl);
+                                form.setFieldValue(['social_links', name, 'customIconUrl'], custom.customIconUrl || '');
                               } else {
                                 form.setFieldValue(['social_links', name, 'isCustom'], false);
-                                form.setFieldValue(['social_links', name, 'customIconUrl'], undefined);
+                                form.setFieldValue(['social_links', name, 'customIconUrl'], '');
                               }
                             }}
                           />
-                          <Button
-                            type="primary"
-                            size="large"
-                            icon={<PlusOutlined />}
-                            onClick={() => handleOpenCustomModal(name)}
-                          />
-                        </Space.Compact>
-                      </Form.Item>
+                        </Form.Item>
+                        <Button
+                          type="primary"
+                          size="large"
+                          icon={<PlusOutlined />}
+                          onClick={() => handleOpenCustomModal(name)}
+                          className="flex-shrink-0"
+                        />
+                      </div>
                     </div>
 
                     <div className="w-full sm:w-1/2">
@@ -268,11 +255,11 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
                     </div>
 
                     {/* Hidden fields */}
-                    <Form.Item name={[name, 'isCustom']} noStyle>
-                      <Input type="hidden" />
+                    <Form.Item {...restField} name={[name, 'isCustom']} hidden>
+                      <Input />
                     </Form.Item>
-                    <Form.Item name={[name, 'customIconUrl']} noStyle>
-                      <Input type="hidden" />
+                    <Form.Item {...restField} name={[name, 'customIconUrl']} hidden>
+                      <Input />
                     </Form.Item>
 
                     <div>
@@ -290,7 +277,7 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
 
                 <Button
                   type="dashed"
-                  onClick={() => add({ platform: 'whatsapp', isCustom: false, url: '' })}
+                  onClick={() => add({ platform: 'whatsapp', isCustom: false, customIconUrl: '', url: '' })}
                   block
                   icon={<PlusOutlined />}
                   size="large"

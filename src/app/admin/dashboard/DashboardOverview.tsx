@@ -26,6 +26,31 @@ import {
 
 const { Title, Text } = Typography;
 
+// Custom tooltip components (declared outside render to avoid state reset)
+const PieTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ background: '#fff', padding: '8px 14px', borderRadius: 10, border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+        <Text style={{ fontWeight: 600, color: '#1E293B', display: 'block' }}>{payload[0].name}</Text>
+        <Text style={{ color: '#64748B', fontSize: 13 }}>{payload[0].value} projects</Text>
+      </div>
+    );
+  }
+  return null;
+};
+
+const AreaTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{ background: '#fff', padding: '8px 14px', borderRadius: 10, border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+        <Text style={{ fontWeight: 600, color: '#1E293B', display: 'block' }}>{label}</Text>
+        <Text style={{ color: '#4F46E5', fontSize: 13 }}>{payload[0].value} pesan</Text>
+      </div>
+    );
+  }
+  return null;
+};
+
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
@@ -112,32 +137,6 @@ export default function DashboardOverview({
       ),
     },
   ];
-
-  // Custom tooltip for pie chart
-  const PieTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div style={{ background: '#fff', padding: '8px 14px', borderRadius: 10, border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-          <Text style={{ fontWeight: 600, color: '#1E293B', display: 'block' }}>{payload[0].name}</Text>
-          <Text style={{ color: '#64748B', fontSize: 13 }}>{payload[0].value} projects</Text>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Custom tooltip for area chart
-  const AreaTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div style={{ background: '#fff', padding: '8px 14px', borderRadius: 10, border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
-          <Text style={{ fontWeight: 600, color: '#1E293B', display: 'block' }}>{label}</Text>
-          <Text style={{ color: '#4F46E5', fontSize: 13 }}>{payload[0].value} pesan</Text>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className={plusJakartaSans.className}>

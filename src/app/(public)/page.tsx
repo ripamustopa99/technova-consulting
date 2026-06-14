@@ -54,9 +54,11 @@ export default async function HomePage() {
   let services: any[] = [];
   let featuredProjects: any[] = [];
   let testimonials: any[] = [];
+  let companyName = 'TechNova Consulting';
+  let tagline = 'Transforming Enterprises';
 
   try {
-    const [servicesData, projectsData, testimonialsData] = await Promise.all([
+    const [servicesData, projectsData, testimonialsData, settingsData] = await Promise.all([
       prisma.service.findMany({
         where: { status: 'PUBLISHED' },
         select: {
@@ -98,10 +100,16 @@ export default async function HomePage() {
         take: 6,
         orderBy: { createdAt: 'desc' },
       }),
+      prisma.setting.findMany({ select: { key: true, value: true } }),
     ]);
     services = servicesData;
     featuredProjects = projectsData;
     testimonials = testimonialsData;
+    // Extract settings
+    const settingsMap: Record<string, string> = {};
+    settingsData.forEach((r) => { settingsMap[r.key] = r.value; });
+    if (settingsMap['company_name']) companyName = settingsMap['company_name'];
+    if (settingsMap['tagline']) tagline = settingsMap['tagline'];
   } catch (error) {
     console.error("Database connection error:", error);
   }
@@ -122,14 +130,14 @@ export default async function HomePage() {
             {/* Eyebrow Text */}
             <div className="inline-flex items-center px-4 py-1.5 mb-6 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-cyan-400 font-medium text-sm tracking-wide">
               <span className="w-2 h-2 rounded-full bg-cyan-400 mr-2 animate-pulse" />
-              Transforming Enterprises
+              {tagline}
             </div>
             
             {/* Master H1 Header */}
             <h1 className={`${plusJakartaSans.className} text-5xl lg:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1]`}>
               Build The Future With{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-cyan-400">
-                TechNova
+                {companyName}
               </span>
             </h1>
             
@@ -548,7 +556,7 @@ export default async function HomePage() {
                 </h2>
 
                 <p className="text-white/70 text-lg lg:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                  Partner with TechNova to unlock the full potential of technology. 
+                  Partner with {companyName} to unlock the full potential of technology. 
                   Let&apos;s discuss how we can drive your digital transformation forward.
                 </p>
 
