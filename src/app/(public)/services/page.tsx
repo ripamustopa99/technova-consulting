@@ -124,10 +124,17 @@ export default async function ServicesPage() {
                       </div>
 
                       {/* CTA */}
-                      <div className="flex-shrink-0 self-center">
+                      <div className="flex-shrink-0 self-center flex flex-col sm:flex-row gap-3">
+                        <Link
+                          href={`/services/${service.slug}`}
+                          className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-medium text-sm hover:bg-cyan-500/20 hover:border-cyan-500/50 transition-all duration-300"
+                        >
+                          Learn More
+                          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        </Link>
                         <Link
                           href="/contact"
-                          className="inline-flex items-center px-6 py-3 rounded-xl bg-slate-800/60 border border-slate-700/50 text-slate-300 font-medium text-sm hover:border-cyan-500/40 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all duration-300"
+                          className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-slate-800/60 border border-slate-700/50 text-slate-300 font-medium text-sm hover:border-cyan-500/40 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all duration-300"
                         >
                           Get Quote
                           <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>

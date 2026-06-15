@@ -1,6 +1,7 @@
 import React from 'react';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google';
 
@@ -20,11 +21,32 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export async function generateStaticParams() {
+  const services = await prisma.service.findMany({
+    where: { status: 'PUBLISHED' },
+    select: { slug: true },
+  });
+  return services.map((s) => ({ slug: s.slug }));
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const service = await prisma.service.findFirst({
+    where: { slug, status: 'PUBLISHED' },
+    select: { title: true, description: true },
+  });
+  if (!service) return { title: 'Service Not Found' };
+  return {
+    title: service.title,
+    description: service.description,
+  };
+}
+
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const service = await prisma.service.findUnique({
-    where: { slug },
+  const service = await prisma.service.findFirst({
+    where: { slug, status: 'PUBLISHED' },
   });
 
   if (!service) {
