@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Typography, Card, Badge, Button, Popconfirm, Empty, Tag, message } from 'antd';
-import { MailOutlined, CheckOutlined, DeleteOutlined, ClockCircleOutlined, UserOutlined } from '@ant-design/icons';
+import React, { useState, useMemo } from 'react';
+import { Typography, Card, Badge, Button, Popconfirm, Empty, Tag, Input, Select, message } from 'antd';
+import { MailOutlined, CheckOutlined, DeleteOutlined, ClockCircleOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { getMessageDetail, markAsRead, deleteMessage } from './actions';
 
@@ -40,6 +40,17 @@ export default function MessagesLayout({ data }: MessagesLayoutProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<MessageDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [search, setSearch] = useState('');
+  const [filterRead, setFilterRead] = useState<string | null>(null);
+
+  const filteredData = useMemo(() => {
+    return data.filter((msg) => {
+      const q = search.toLowerCase();
+      const matchSearch = !q || msg.name.toLowerCase().includes(q) || msg.email.toLowerCase().includes(q);
+      const matchRead = filterRead === null || (filterRead === 'unread' ? !msg.isRead : msg.isRead);
+      return matchSearch && matchRead;
+    });
+  }, [data, search, filterRead]);
 
   const handleSelectMessage = async (id: string) => {
     setSelectedId(id);
@@ -104,15 +115,41 @@ export default function MessagesLayout({ data }: MessagesLayoutProps) {
             styles={{ body: { padding: 0 } }}
           >
             <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 rounded-t-xl">
-              <Text className="font-semibold text-slate-600 text-sm">Inbox ({data.length})</Text>
+              <Text className="font-semibold text-slate-600 text-sm">Inbox ({filteredData.length}{filteredData.length !== data.length ? ` / ${data.length}` : ''})</Text>
             </div>
-            <div className="max-h-[560px] overflow-y-auto">
-              {data.length === 0 ? (
+
+            {/* Search & Filter */}
+            <div className="px-3 py-2 border-b border-slate-100 space-y-2">
+              <Input
+                placeholder="Cari nama atau email..."
+                prefix={<SearchOutlined className="text-slate-400" />}
+                allowClear
+                size="small"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="rounded-lg"
+              />
+              <Select
+                placeholder="Semua pesan"
+                allowClear
+                size="small"
+                value={filterRead}
+                onChange={(v) => setFilterRead(v ?? null)}
+                className="w-full"
+                options={[
+                  { value: 'unread', label: 'Belum Dibaca' },
+                  { value: 'read', label: 'Sudah Dibaca' },
+                ]}
+              />
+            </div>
+
+            <div className="max-h-[500px] overflow-y-auto">
+              {filteredData.length === 0 ? (
                 <div className="p-8 text-center">
-                  <Empty description="Belum ada pesan masuk" />
+                  <Empty description="Tidak ada pesan yang cocok" />
                 </div>
               ) : (
-                data.map((msg) => (
+                filteredData.map((msg) => (
                   <div
                     key={msg.id}
                     onClick={() => handleSelectMessage(msg.id)}

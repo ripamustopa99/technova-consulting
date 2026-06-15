@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, Input, Switch, Select, Upload, message, Spin } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, InboxOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, InboxOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { createProject, updateProject, deleteProject, getProjectDetail } from './actions';
 import ResponsiveTable from '@/components/ResponsiveTable';
@@ -34,6 +34,19 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loadingForm, setLoadingForm] = useState(false);
   const [form] = Form.useForm();
+  const [search, setSearch] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [filterFeatured, setFilterFeatured] = useState<string | null>(null);
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      const q = search.toLowerCase();
+      const matchSearch = !q || item.title.toLowerCase().includes(q) || (item.client?.toLowerCase().includes(q)) || (item.category?.toLowerCase().includes(q));
+      const matchCategory = !filterCategory || item.category === filterCategory;
+      const matchFeatured = filterFeatured === null || (filterFeatured === 'featured' ? item.featured : !item.featured);
+      return matchSearch && matchCategory && matchFeatured;
+    });
+  }, [data, search, filterCategory, filterFeatured]);
 
   const handleOpenModal = async (record?: ProjectData) => {
     setIsModalOpen(true);
@@ -218,10 +231,51 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
           </Button>
         </div>
 
+        {/* Search & Filter */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <Input
+            placeholder="Cari project, client, atau kategori..."
+            prefix={<SearchOutlined className="text-slate-400" />}
+            allowClear
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="rounded-lg flex-1"
+            size="large"
+          />
+          <div className="flex gap-2">
+            <Select
+              placeholder="Kategori"
+              allowClear
+              value={filterCategory}
+              onChange={(v) => setFilterCategory(v ?? null)}
+              className="min-w-[140px]"
+              size="large"
+              options={[
+                { value: 'Web Development', label: 'Web Development' },
+                { value: 'Mobile App', label: 'Mobile App' },
+                { value: 'Cloud Solutions', label: 'Cloud Solutions' },
+                { value: 'Cybersecurity', label: 'Cybersecurity' },
+              ]}
+            />
+            <Select
+              placeholder="Status"
+              allowClear
+              value={filterFeatured}
+              onChange={(v) => setFilterFeatured(v ?? null)}
+              className="min-w-[120px]"
+              size="large"
+              options={[
+                { value: 'featured', label: 'Featured' },
+                { value: 'regular', label: 'Regular' },
+              ]}
+            />
+          </div>
+        </div>
+
         <ResponsiveTable>
           <Table 
             columns={columns} 
-            dataSource={data} 
+            dataSource={filteredData} 
             rowKey="id"
             pagination={{ pageSize: 10, className: 'mt-6' }}
             className="border border-slate-100 rounded-xl overflow-hidden [&_.ant-table-thead_th]:bg-slate-50 [&_.ant-table-thead_th]:text-slate-500 [&_.ant-table-thead_th]:font-semibold"

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, Input, Rate, message, Upload } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, StarFilled, InboxOutlined } from '@ant-design/icons';
+import React, { useState, useMemo } from 'react';
+import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, Input, Rate, message, Upload, Select } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, StarFilled, InboxOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { createTestimonial, updateTestimonial, deleteTestimonial, getTestimonial } from './actions';
 import ResponsiveTable from '@/components/ResponsiveTable';
@@ -33,6 +33,17 @@ export default function TestimonialsTable({ data }: TestimonialsTableProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form] = Form.useForm();
+  const [search, setSearch] = useState('');
+  const [filterRating, setFilterRating] = useState<string | null>(null);
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      const q = search.toLowerCase();
+      const matchSearch = !q || item.clientName.toLowerCase().includes(q) || (item.company?.toLowerCase().includes(q));
+      const matchRating = !filterRating || item.rating === Number(filterRating);
+      return matchSearch && matchRating;
+    });
+  }, [data, search, filterRating]);
 
   const handleOpenModal = async (record?: TestimonialData) => {
     setIsModalOpen(true);
@@ -231,10 +242,38 @@ export default function TestimonialsTable({ data }: TestimonialsTableProps) {
           </Button>
         </div>
 
+        {/* Search & Filter */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+          <Input
+            placeholder="Cari nama klien atau perusahaan..."
+            prefix={<SearchOutlined className="text-slate-400" />}
+            allowClear
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="rounded-lg flex-1"
+            size="large"
+          />
+          <Select
+            placeholder="Rating"
+            allowClear
+            value={filterRating}
+            onChange={(v) => setFilterRating(v ?? null)}
+            className="sm:min-w-[140px]"
+            size="large"
+            options={[
+              { value: '5', label: '⭐⭐⭐⭐⭐ (5)' },
+              { value: '4', label: '⭐⭐⭐⭐ (4)' },
+              { value: '3', label: '⭐⭐⭐ (3)' },
+              { value: '2', label: '⭐⭐ (2)' },
+              { value: '1', label: '⭐ (1)' },
+            ]}
+          />
+        </div>
+
         <ResponsiveTable>
           <Table 
             columns={columns} 
-            dataSource={data} 
+            dataSource={filteredData} 
             rowKey="id"
             pagination={{ pageSize: 10, className: 'mt-6' }}
             className="border border-slate-100 rounded-xl overflow-hidden [&_.ant-table-thead_th]:bg-slate-50 [&_.ant-table-thead_th]:text-slate-500 [&_.ant-table-thead_th]:font-semibold"

@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Table, Button, Popconfirm, Tag, Space, Typography, Card, message } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useState, useMemo } from 'react';
+import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Input, Select, message } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { deleteBlog } from './actions';
@@ -30,6 +30,17 @@ interface BlogTableProps {
 
 export default function BlogTable({ data }: BlogTableProps) {
   const router = useRouter();
+  const [search, setSearch] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string | null>(null);
+
+  const filteredData = useMemo(() => {
+    return data.filter((item) => {
+      const q = search.toLowerCase();
+      const matchSearch = !q || item.title.toLowerCase().includes(q) || item.author.toLowerCase().includes(q);
+      const matchStatus = !filterStatus || item.status === filterStatus;
+      return matchSearch && matchStatus;
+    });
+  }, [data, search, filterStatus]);
 
   const handleDelete = async (id: string) => {
     const res = await deleteBlog(id);
@@ -129,10 +140,35 @@ export default function BlogTable({ data }: BlogTableProps) {
         </Button>
       </div>
 
+      {/* Search & Filter */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <Input
+          placeholder="Cari judul atau penulis..."
+          prefix={<SearchOutlined className="text-slate-400" />}
+          allowClear
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="rounded-lg flex-1"
+          size="large"
+        />
+        <Select
+          placeholder="Status"
+          allowClear
+          value={filterStatus}
+          onChange={(v) => setFilterStatus(v ?? null)}
+          className="sm:min-w-[140px]"
+          size="large"
+          options={[
+            { value: 'PUBLISHED', label: 'Published' },
+            { value: 'DRAFT', label: 'Draft' },
+          ]}
+        />
+      </div>
+
       <ResponsiveTable>
         <Table 
           columns={columns} 
-          dataSource={data} 
+          dataSource={filteredData} 
           rowKey="id"
           pagination={{ pageSize: 10, className: 'mt-6' }}
           className="border border-slate-100 rounded-xl overflow-hidden [&_.ant-table-thead_th]:bg-slate-50 [&_.ant-table-thead_th]:text-slate-500 [&_.ant-table-thead_th]:font-semibold"
