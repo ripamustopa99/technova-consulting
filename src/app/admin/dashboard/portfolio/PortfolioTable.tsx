@@ -240,16 +240,14 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="rounded-lg flex-1"
-            size="large"
           />
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Select
               placeholder="Kategori"
               allowClear
               value={filterCategory}
               onChange={(v) => setFilterCategory(v ?? null)}
-              className="min-w-[140px]"
-              size="large"
+              className="min-w-[140px] flex-1 sm:flex-none"
               options={[
                 { value: 'Web Development', label: 'Web Development' },
                 { value: 'Mobile App', label: 'Mobile App' },
@@ -262,8 +260,7 @@ export default function PortfolioTable({ data }: PortfolioTableProps) {
               allowClear
               value={filterFeatured}
               onChange={(v) => setFilterFeatured(v ?? null)}
-              className="min-w-[120px]"
-              size="large"
+              className="min-w-[120px] flex-1 sm:flex-none"
               options={[
                 { value: 'featured', label: 'Featured' },
                 { value: 'regular', label: 'Regular' },

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Typography, Card, Badge, Button, Popconfirm, Empty, Tag, Input, Select, message } from 'antd';
+import { Typography, Card, Badge, Button, Popconfirm, Empty, Tag, Input, Select, DatePicker, message } from 'antd';
 import { MailOutlined, CheckOutlined, DeleteOutlined, ClockCircleOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { getMessageDetail, markAsRead, deleteMessage } from './actions';
+import type { Dayjs } from 'dayjs';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -42,15 +43,21 @@ export default function MessagesLayout({ data }: MessagesLayoutProps) {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [search, setSearch] = useState('');
   const [filterRead, setFilterRead] = useState<string | null>(null);
+  const [filterDate, setFilterDate] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
   const filteredData = useMemo(() => {
     return data.filter((msg) => {
       const q = search.toLowerCase();
       const matchSearch = !q || msg.name.toLowerCase().includes(q) || msg.email.toLowerCase().includes(q);
       const matchRead = filterRead === null || (filterRead === 'unread' ? !msg.isRead : msg.isRead);
-      return matchSearch && matchRead;
+      let matchDate = true;
+      if (filterDate?.[0] && filterDate?.[1]) {
+        const d = new Date(msg.createdAt);
+        matchDate = d >= filterDate[0].startOf('day').toDate() && d <= filterDate[1].endOf('day').toDate();
+      }
+      return matchSearch && matchRead && matchDate;
     });
-  }, [data, search, filterRead]);
+  }, [data, search, filterRead, filterDate]);
 
   const handleSelectMessage = async (id: string) => {
     setSelectedId(id);
@@ -129,18 +136,28 @@ export default function MessagesLayout({ data }: MessagesLayoutProps) {
                 onChange={(e) => setSearch(e.target.value)}
                 className="rounded-lg"
               />
-              <Select
-                placeholder="Semua pesan"
-                allowClear
-                size="small"
-                value={filterRead}
-                onChange={(v) => setFilterRead(v ?? null)}
-                className="w-full"
-                options={[
-                  { value: 'unread', label: 'Belum Dibaca' },
-                  { value: 'read', label: 'Sudah Dibaca' },
-                ]}
-              />
+              <div className="flex gap-2">
+                <Select
+                  placeholder="Semua"
+                  allowClear
+                  size="small"
+                  value={filterRead}
+                  onChange={(v) => setFilterRead(v ?? null)}
+                  className="flex-1"
+                  options={[
+                    { value: 'unread', label: 'Belum Dibaca' },
+                    { value: 'read', label: 'Sudah Dibaca' },
+                  ]}
+                />
+                <DatePicker.RangePicker
+                  size="small"
+                  value={filterDate}
+                  onChange={(dates) => setFilterDate(dates)}
+                  className="flex-1"
+                  placeholder={['Dari', 'Sampai']}
+                  style={{ minWidth: 0 }}
+                />
+              </div>
             </div>
 
             <div className="max-h-[500px] overflow-y-auto">

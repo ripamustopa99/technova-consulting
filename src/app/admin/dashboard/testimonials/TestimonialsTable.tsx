@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, Input, Rate, message, Upload, Select } from 'antd';
+import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Modal, Form, Input, Rate, message, Upload, Select, DatePicker } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, StarFilled, InboxOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { createTestimonial, updateTestimonial, deleteTestimonial, getTestimonial } from './actions';
 import ResponsiveTable from '@/components/ResponsiveTable';
 import Image from 'next/image';
+import type { Dayjs } from 'dayjs';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -35,15 +36,21 @@ export default function TestimonialsTable({ data }: TestimonialsTableProps) {
   const [form] = Form.useForm();
   const [search, setSearch] = useState('');
   const [filterRating, setFilterRating] = useState<string | null>(null);
+  const [filterDate, setFilterDate] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       const q = search.toLowerCase();
       const matchSearch = !q || item.clientName.toLowerCase().includes(q) || (item.company?.toLowerCase().includes(q));
       const matchRating = !filterRating || item.rating === Number(filterRating);
-      return matchSearch && matchRating;
+      let matchDate = true;
+      if (filterDate?.[0] && filterDate?.[1]) {
+        const d = new Date(item.createdAt);
+        matchDate = d >= filterDate[0].startOf('day').toDate() && d <= filterDate[1].endOf('day').toDate();
+      }
+      return matchSearch && matchRating && matchDate;
     });
-  }, [data, search, filterRating]);
+  }, [data, search, filterRating, filterDate]);
 
   const handleOpenModal = async (record?: TestimonialData) => {
     setIsModalOpen(true);
@@ -251,23 +258,29 @@ export default function TestimonialsTable({ data }: TestimonialsTableProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="rounded-lg flex-1"
-            size="large"
           />
-          <Select
-            placeholder="Rating"
-            allowClear
-            value={filterRating}
-            onChange={(v) => setFilterRating(v ?? null)}
-            className="sm:min-w-[140px]"
-            size="large"
-            options={[
-              { value: '5', label: '⭐⭐⭐⭐⭐ (5)' },
-              { value: '4', label: '⭐⭐⭐⭐ (4)' },
-              { value: '3', label: '⭐⭐⭐ (3)' },
-              { value: '2', label: '⭐⭐ (2)' },
-              { value: '1', label: '⭐ (1)' },
-            ]}
-          />
+          <div className="flex gap-2 flex-wrap">
+            <Select
+              placeholder="Rating"
+              allowClear
+              value={filterRating}
+              onChange={(v) => setFilterRating(v ?? null)}
+              className="min-w-[130px] flex-1 sm:flex-none"
+              options={[
+                { value: '5', label: '⭐⭐⭐⭐⭐ (5)' },
+                { value: '4', label: '⭐⭐⭐⭐ (4)' },
+                { value: '3', label: '⭐⭐⭐ (3)' },
+                { value: '2', label: '⭐⭐ (2)' },
+                { value: '1', label: '⭐ (1)' },
+              ]}
+            />
+            <DatePicker.RangePicker
+              value={filterDate}
+              onChange={(dates) => setFilterDate(dates)}
+              className="flex-1 sm:flex-none"
+              placeholder={['Dari tanggal', 'Sampai tanggal']}
+            />
+          </div>
         </div>
 
         <ResponsiveTable>

@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Input, Select, message } from 'antd';
+import { Table, Button, Popconfirm, Tag, Space, Typography, Card, Input, Select, DatePicker, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { deleteBlog } from './actions';
 import ResponsiveTable from '@/components/ResponsiveTable';
+import type { Dayjs } from 'dayjs';
 
 const { Title } = Typography;
 
@@ -32,15 +33,21 @@ export default function BlogTable({ data }: BlogTableProps) {
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
+  const [filterDate, setFilterDate] = useState<[Dayjs | null, Dayjs | null] | null>(null);
 
   const filteredData = useMemo(() => {
     return data.filter((item) => {
       const q = search.toLowerCase();
       const matchSearch = !q || item.title.toLowerCase().includes(q) || item.author.toLowerCase().includes(q);
       const matchStatus = !filterStatus || item.status === filterStatus;
-      return matchSearch && matchStatus;
+      let matchDate = true;
+      if (filterDate?.[0] && filterDate?.[1]) {
+        const d = new Date(item.createdAt);
+        matchDate = d >= filterDate[0].startOf('day').toDate() && d <= filterDate[1].endOf('day').toDate();
+      }
+      return matchSearch && matchStatus && matchDate;
     });
-  }, [data, search, filterStatus]);
+  }, [data, search, filterStatus, filterDate]);
 
   const handleDelete = async (id: string) => {
     const res = await deleteBlog(id);
@@ -149,20 +156,26 @@ export default function BlogTable({ data }: BlogTableProps) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="rounded-lg flex-1"
-          size="large"
         />
-        <Select
-          placeholder="Status"
-          allowClear
-          value={filterStatus}
-          onChange={(v) => setFilterStatus(v ?? null)}
-          className="sm:min-w-[140px]"
-          size="large"
-          options={[
-            { value: 'PUBLISHED', label: 'Published' },
-            { value: 'DRAFT', label: 'Draft' },
-          ]}
-        />
+        <div className="flex gap-2 flex-wrap">
+          <Select
+            placeholder="Status"
+            allowClear
+            value={filterStatus}
+            onChange={(v) => setFilterStatus(v ?? null)}
+            className="min-w-[130px] flex-1 sm:flex-none"
+            options={[
+              { value: 'PUBLISHED', label: 'Published' },
+              { value: 'DRAFT', label: 'Draft' },
+            ]}
+          />
+          <DatePicker.RangePicker
+            value={filterDate}
+            onChange={(dates) => setFilterDate(dates)}
+            className="flex-1 sm:flex-none"
+            placeholder={['Dari tanggal', 'Sampai tanggal']}
+          />
+        </div>
       </div>
 
       <ResponsiveTable>
