@@ -16,7 +16,6 @@ import {
   UserOutlined,
   LogoutOutlined,
   LoadingOutlined,
-  BellOutlined,
   KeyOutlined,
   CloseOutlined,
 } from '@ant-design/icons';
@@ -55,7 +54,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobile, setIsMobile] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [profileName, setProfileName] = useState('Admin');
   const [profileEmail, setProfileEmail] = useState('admin@technova.com');
@@ -65,20 +63,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     setMounted(true);
 
-    // Fetch notifications
-    const fetchNotifications = async () => {
+    // Fetch unread count for sidebar badge
+    const fetchUnreadCount = async () => {
       try {
         const res = await fetch('/api/admin/notifications');
         const data = await res.json();
         if (data.success) {
-          setNotifications(data.messages);
           setUnreadCount(data.total);
         }
       } catch (err) {
-        console.error('Failed to load notifications', err);
+        console.error('Failed to load unread count', err);
       }
     };
-    fetchNotifications();
+    fetchUnreadCount();
 
     // Fetch profile settings
     const fetchProfile = async () => {
@@ -109,7 +106,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         const res = await fetch('/api/admin/notifications');
         const data = await res.json();
         if (data.success) {
-          setNotifications(data.messages);
           setUnreadCount(data.total);
         }
       } catch (err) {
@@ -171,23 +167,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       { type: 'divider' },
       { key: 'logout', icon: isLoggingOut ? <LoadingOutlined /> : <LogoutOutlined />, label: isLoggingOut ? 'Logging out...' : 'Logout', danger: true },
     ],
-  };
-
-  const notificationMenu: MenuProps = {
-    items: notifications.length > 0 
-      ? notifications.map((msg, idx) => ({
-          key: `msg-${idx}`,
-          label: (
-            <div style={{ padding: '4px 0' }}>
-              <Text strong style={{ display: 'block', fontSize: 13 }}>{msg.name}</Text>
-              <Text type="secondary" style={{ fontSize: 12 }}>{msg.email}</Text>
-            </div>
-          ),
-          onClick: () => router.push('/admin/dashboard/messages')
-        }))
-      : [
-          { key: 'empty', label: <Text type="secondary">Tidak ada pesan baru</Text>, disabled: true }
-        ]
   };
 
   const fullMenuItems = [
@@ -271,7 +250,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div style={{ width: 200, height: 20, borderRadius: 6, background: '#E2E8F0' }} />
             <div style={{ display: 'flex', gap: 12 }}>
               <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E2E8F0' }} />
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: '#E2E8F0' }} />
             </div>
           </div>
           <div style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -326,11 +304,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <Dropdown menu={notificationMenu} placement="bottomRight" trigger={['click']}>
-              <Badge count={unreadCount} size="small" offset={[-4, 4]}>
-                <Button type="text" icon={<BellOutlined />} style={{ fontSize: 16, width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }} />
-              </Badge>
-            </Dropdown>
             <Dropdown menu={profileMenu} placement="bottomRight" trigger={['click']}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', padding: '6px 10px', borderRadius: 10 }}>
                 <Avatar size={34} icon={<UserOutlined />} style={{ background: 'linear-gradient(135deg, #22D3EE, #6366F1)' }} />

@@ -388,7 +388,7 @@ export default function TeamGrid({ data }: TeamGridProps) {
                         danger
                         icon={<DeleteOutlined />}
                         onClick={() => remove(name)} 
-                       className="hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                        className="hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
                         shape="circle"
                       />
                     </div>

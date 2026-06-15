@@ -272,7 +272,7 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
                     <div>
                       <Button
                         danger
-                        type="text"
+                        type="text" 
                         shape="circle"
                         icon={<DeleteOutlined />}
                         onClick={() => remove(name)}
