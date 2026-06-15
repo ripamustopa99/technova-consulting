@@ -36,8 +36,11 @@ export default async function ServicesPage() {
     data: '📊', ai: '🤖', devops: '⚙️', consulting: '💼',
   };
 
-  const getIcon = (title: string) => {
-    const lower = title.toLowerCase();
+  const getIcon = (service: { title: string; image: string | null }) => {
+    // If image is an emoji (not a URL), use it directly
+    if (service.image && !service.image.startsWith('http')) return service.image;
+    // Fallback: match title keyword
+    const lower = service.title.toLowerCase();
     for (const [key, icon] of Object.entries(serviceIcons)) {
       if (lower.includes(key)) return icon;
     }
@@ -86,7 +89,7 @@ export default async function ServicesPage() {
                         {service.image && service.image.startsWith('http') ? (
                           <img src={service.image} alt={service.title} className="w-8 h-8 object-contain" />
                         ) : (
-                          <span className="text-3xl">{getIcon(service.title)}</span>
+                          <span className="text-3xl">{getIcon(service)}</span>
                         )}
                       </div>
 

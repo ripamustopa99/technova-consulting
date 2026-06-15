@@ -2,7 +2,6 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import { extractPublicId, deleteFromCloudinary } from '@/lib/cloudinary';
 
 export async function getService(id: string) {
   try {
@@ -48,21 +47,6 @@ export async function createService(data: any) {
 
 export async function updateService(id: string, data: any) {
   try {
-    // 1. Ambil data layanan saat ini
-    const existing = await prisma.service.findUnique({
-      where: { id },
-      select: { image: true },
-    });
-
-    // 2. Jika gambar diubah/dihapus, bersihkan file lama dari Cloudinary
-    if (existing && existing.image && existing.image !== data.image) {
-      const publicId = extractPublicId(existing.image);
-      if (publicId) {
-        await deleteFromCloudinary(publicId);
-      }
-    }
-
-    // 3. Update data layanan di database
     await prisma.service.update({
       where: { id },
       data: {
@@ -85,21 +69,6 @@ export async function updateService(id: string, data: any) {
 
 export async function deleteService(id: string) {
   try {
-    // 1. Ambil data layanan
-    const existing = await prisma.service.findUnique({
-      where: { id },
-      select: { image: true },
-    });
-
-    // 2. Hapus file fisik gambar dari Cloudinary jika ada
-    if (existing && existing.image) {
-      const publicId = extractPublicId(existing.image);
-      if (publicId) {
-        await deleteFromCloudinary(publicId);
-      }
-    }
-
-    // 3. Hapus record dari database
     await prisma.service.delete({
       where: { id },
     });

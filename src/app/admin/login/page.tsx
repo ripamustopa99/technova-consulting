@@ -56,9 +56,8 @@ export default function AdminLoginPage() {
         style={{ borderRadius: '24px' }}
       >
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-900 mb-5 shadow-lg shadow-slate-900/20">
-            {/* TechNova Icon Placeholder */}
-            <span className="text-cyan-400 font-extrabold text-2xl tracking-tighter">TN</span>
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-5 shadow-lg" style={{ background: 'linear-gradient(135deg, #22D3EE, #6366F1)' }}>
+            <span className="text-white font-extrabold text-2xl tracking-tighter">TN</span>
           </div>
           <Title level={2} className={`${plusJakartaSans.className}`} style={{ margin: 0, fontWeight: 700, color: '#0F172A' }}>
             Admin Portal

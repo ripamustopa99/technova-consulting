@@ -40,7 +40,6 @@ const menuItems = [
   { key: '/admin/dashboard/blog', icon: <FileTextOutlined />, label: <Link href="/admin/dashboard/blog">Blog</Link> },
   { key: '/admin/dashboard/team', icon: <TeamOutlined />, label: <Link href="/admin/dashboard/team">Team</Link> },
   { key: '/admin/dashboard/testimonials', icon: <StarOutlined />, label: <Link href="/admin/dashboard/testimonials">Testimonials</Link> },
-  { key: '/admin/dashboard/messages', icon: <MailOutlined />, label: <Link href="/admin/dashboard/messages">Messages</Link> },
   { key: '/admin/dashboard/settings', icon: <SettingOutlined />, label: <Link href="/admin/dashboard/settings">Settings</Link> },
 ];
 
@@ -102,12 +101,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Re-fetch notifications on page navigation to keep badge in sync
+  useEffect(() => {
+    if (!mounted) return;
+    const refreshUnread = async () => {
+      try {
+        const res = await fetch('/api/admin/notifications');
+        const data = await res.json();
+        if (data.success) {
+          setNotifications(data.messages);
+          setUnreadCount(data.total);
+        }
+      } catch (err) {
+        // Silently ignore — badge will update on next navigation
+      }
+    };
+    refreshUnread();
+  }, [pathname, mounted]);
+
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
 
   const getSelectedKey = () => {
-    const sorted = menuItems.map((i) => i.key).sort((a, b) => b.length - a.length);
+    const allKeys = [...menuItems.map((i) => i.key), '/admin/dashboard/messages'];
+    const sorted = allKeys.sort((a, b) => b.length - a.length);
     for (const key of sorted) {
       if (pathname.startsWith(key)) return key;
     }
@@ -172,12 +190,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ]
   };
 
+  const fullMenuItems = [
+    ...menuItems.slice(0, 6),
+    {
+      key: '/admin/dashboard/messages',
+      icon: (
+        <Badge count={unreadCount} size="small" offset={[2, -2]}>
+          <MailOutlined />
+        </Badge>
+      ),
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Link href="/admin/dashboard/messages">Messages</Link>
+          {unreadCount > 0 && !collapsed && (
+            <span style={{
+              background: '#EF4444', color: '#fff', fontSize: 11, fontWeight: 600,
+              borderRadius: 10, padding: '1px 7px', lineHeight: '18px', marginLeft: 8,
+            }}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
+        </span>
+      ),
+    },
+    menuItems[6],
+  ];
+
   const sidebarMenu = (
     <Menu
       theme="dark"
       mode="inline"
       selectedKeys={[getSelectedKey()]}
-      items={menuItems}
+      items={fullMenuItems}
       style={{ background: 'transparent', borderRight: 0, marginTop: 8 }}
     />
   );

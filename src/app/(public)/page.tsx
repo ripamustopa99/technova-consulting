@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   }
 };
 
-// Service icon mapping (inline SVG fallback when no image URL)
+// Service icon mapping (fallback when no emoji or URL stored)
 const serviceIcons: Record<string, string> = {
   'cloud': '☁️',
   'web': '🌐',
@@ -41,8 +41,11 @@ const serviceIcons: Record<string, string> = {
   'default': '⚡',
 };
 
-function getServiceIcon(title: string): string {
-  const lower = title.toLowerCase();
+function getServiceIcon(service: { title: string; image: string | null }): string {
+  // If image is an emoji (not a URL), use it directly
+  if (service.image && !service.image.startsWith('http')) return service.image;
+  // Fallback: match title keyword
+  const lower = service.title.toLowerCase();
   for (const [key, icon] of Object.entries(serviceIcons)) {
     if (lower.includes(key)) return icon;
   }
@@ -267,7 +270,7 @@ export default async function HomePage() {
                           {service.image && service.image.startsWith('http') ? (
                             <img src={service.image} alt={service.title} className="w-7 h-7 object-contain" />
                           ) : (
-                            <span className="text-2xl">{getServiceIcon(service.title)}</span>
+                            <span className="text-2xl">{getServiceIcon(service)}</span>
                           )}
                         </div>
 

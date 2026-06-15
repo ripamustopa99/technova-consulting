@@ -59,3 +59,10 @@ export.ts
 import.js
 migrate-data.js
 neon-import.sql
+
+# AI agent instructions and internal docs
+CLAUDE.md
+AGENTS.md
+DEVELOPER.md
+PRD.md
+design.md
